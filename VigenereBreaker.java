@@ -10,26 +10,26 @@ public class VigenereBreaker {
     	VB.breakVigenere();
     	}
 	
-	String encrypted; 
-	HashMap<String,HashSet<String>> languages = new HashMap<String,HashSet<String>> (); 
-	HashSet<String> hs = new HashSet<String> (); 
+		String encrypted; 
+		
 	
     public void breakVigenere () {
     	//get encrypted message from FileResource
     	FileResource fr = new FileResource(); 
     	// make the message a String
     	encrypted = fr.asString(); 
-    	// Get the folder with all the dictionaries 
+    	HashMap<String,HashSet<String>> languagesA = new HashMap<String,HashSet<String>> (); 
+	// Get the folder with all the dictionaries 
     	DirectoryResource dr = new DirectoryResource();
     		// get each dictionary from DirectoryResource
 			for(File f: dr.selectedFiles()) {
-				//use FileResource to access the dictionary
+				//use FileResource to access the file
 				FileResource dt = new FileResource(f);
 				// add the file name to languages key and build the languages HashMap for break for all languages
-				languages.put(f.getName(), readDictionary(dt));
+				languagesA.put(f.getName(), readDictionary(dt));
 				// run breakFoaAllLanguages and pass each dictionary
 			}
-			breakForAllLanguages(encrypted, languages); 
+			breakForAllLanguages(encrypted, languagesA); 
 
     }
 	
@@ -61,10 +61,11 @@ public class VigenereBreaker {
 
     
     public HashSet<String> readDictionary (FileResource dt) {
-    	hs.clear();
+		HashSet<String> hs = new HashSet<String> (); 
+		hs.clear();
     	for(String word: dt.words()) {
-    		String word1 = word.toLowerCase(); 
-    		hs.add(word1);
+    		word = word.toLowerCase(); 
+    		hs.add(word);
     	}
     	return hs; 
     }
@@ -75,7 +76,7 @@ public class VigenereBreaker {
     	int right = 0;
     	for(int i = 0; i< wordsMessage.length; i++) {
     		String iWord = wordsMessage[i];
-    		if (hs.contains(iWord)) {
+    		if (dictionary.contains(iWord)) {
     			++right; 
     		}
     	}
@@ -143,9 +144,9 @@ public class VigenereBreaker {
      * print language used
      */
     
-    public void breakForAllLanguages(String encrypted, HashMap<String, HashSet<String>> languages) {
-    	for(String s : languages.keySet()) {
-    		breakForLanguage(encrypted,languages.get(s));
+    public void breakForAllLanguages(String encrypted, HashMap<String, HashSet<String>> languagesB) {
+    	for(String s : languagesB.keySet()) {
+    		breakForLanguage(encrypted,languagesB.get(s));
     		System.out.println(s);
     	}
     }
